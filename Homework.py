@@ -1,51 +1,49 @@
-# Завдання 1
-# Створіть два окремих "мікросервіси" (дві окремі
-# програми). Одна програма створює та експортує дані у
-# форматі JSON, а інша програма завантажує та обробляє ці
-# дані. Це може бути, наприклад, система, яка створює та
-# обробляє замовлення.
+# Завдання 2
+# Створіть програму для проведення опитування або
+# анкетування. Зберігайте відповіді користувачів у форматі
+# JSON файлу. Кожне опитування може бути окремим
+# об'єктом у файлі JSON, а відповіді кожного користувача -
+# списком значень.
+
 import json
 
-def add_order():
-    order = {
-        "номер": "ЗМ0001",
-        "товар": "Книга",
-        "кількість": 2,
-        "ціна": 150
-    }
-    return order
 
-def export_data(filename):
-    order = add_order()
+def conduct_survey(question, answer_options):
+    print(question)
+    for i, version in enumerate(answer_options, 1):
+        print(f"{i}. {version}")
+    choice = int(input("Виберіть номер відповіді: "))
+    while choice not in range(1, len(answer_options) + 1):
+        choice = int(input("Невірний номер. Виберіть номер відповіді ще раз: "))
+    return choice
+
+
+def save_answers(answers, filename):
     with open(filename, 'w') as file:
-        json.dump(order, file)
+        json.dump(answers, file)
 
-if __name__ == "__main__":
-    export_data("замовлення.json")
-    print("Дані про замовлення було експортовано у файл 'замовлення.json'.")
 
-#import json
-
-def download_data(filename):
+def download_survey(filename):
     with open(filename, 'r') as f:
         return json.load(f)
 
-def process_order(order):
-    number = order["номер"]
-    goods = order["товар"]
-    quantity = order["кількість"]
-    price = order["ціна"]
-
-
-    total_cost  = quantity * price
-    return number, goods, quantity, price, total_cost
 
 if __name__ == "__main__":
-    order = download_data("замовлення.json")
-    number, goods, quantity, price, total_cost = process_order(order)
-    print("Інформація про замовлення:")
-    print("Номер:", number)
-    print("Товар:", goods)
-    print("Кількість:", quantity)
-    print("Ціна за одиницю:", price)
-    print("Загальна вартість:", total_cost)
+    poll = {
+        "питання": "Яка ваша улюблена мова програмування?",
+        "варіанти_відповідей": ["Python", "Java", "JavaScript", "C++", "Інша"]
+    }
+
+    answers  = []
+
+    print("Вас вітає програма для проведення опитування!")
+
+    number_participants = int(input("Скільки учасників буде проходити опитування? "))
+
+    for member in range(1, number_participants + 1):
+        print(f"\nУчасник {member}:")
+        answers = conduct_survey(poll["питання"], poll["варіанти_відповідей"])
+        answers.append(answers)
+
+    save_answers(answers, "відповіді.json")
+    print("Ваші відповіді було збережено у файлі 'відповіді.json'.")
